@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+using vHotelAPI.Extensions;
 
 namespace vHotelAPI
 {
@@ -26,12 +20,13 @@ namespace vHotelAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            #region Configure Swagger
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc(name: "v1", new OpenApiInfo { Title = "vHotel API", Version = "v1" });
-            });
-            #endregion
+            services.ConfigureCors();
+            services.ConfigureIISIntegration();
+            services.ConfigureSqlContext(Configuration);
+            services.ConfigureRepositoryWrapper();
+            services.AddAutoMapper(typeof(Startup));
+            services.ConfigureSwagger();
+
             services.AddControllers();
         }
 
